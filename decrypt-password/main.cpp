@@ -4,15 +4,17 @@
 #include <termios.h>
 #include <unistd.h>
 
+using namespace std;
+
 class User {
 public:
-  std::string email;
-  std::string password;
+  string email;
+  string password;
 
-  User(const std::string& e, const std::string& p) : email(e), password(p) {}
+  User(const string& e, const string& p) : email(e), password(p) {}
 };
 
-std::vector<User> users;
+vector<User> users;
 
 void disable_echo() {
   termios t;
@@ -29,44 +31,44 @@ void enable_echo() {
 }
 
 void clear_screen() {
-  std::cout << "\033[2J\033[1;1H"; // ANSI escape code for clearing screen (Linux/macOS)
+  cout << "\033[2J\033[1;1H"; // ANSI escape code for clearing screen (Linux/macOS)
 }
 
-void print_header(const std::string& title) {
-  std::cout << "==============================================" << std::endl;
-  std::cout << "   " << title << std::endl;
-  std::cout << "==============================================\n" << std::endl;
+void print_header(const string& title) {
+  cout << "==============================================" << endl;
+  cout << "   " << title << endl;
+  cout << "==============================================\n" << endl;
 }
 
 void wait_for_enter() {
-  std::cout << "Press ENTER to continue...";
-  std::cin.ignore();
-  std::cin.get();
+  cout << "Press ENTER to continue...";
+  cin.ignore();
+  cin.get();
 }
 
 void register_user() {
   clear_screen();
-  std::string email, password;
+  string email, password;
 
   print_header("User Registration");
-  std::cout << "Enter your email: ";
-  std::cin >> email;
+  cout << "Enter your email: ";
+  cin >> email;
 
   do {
-    std::cout << "Enter your password (max 3 characters): ";
+    cout << "Enter your password (max 3 characters): ";
     disable_echo();
-    std::cin >> password;
+    cin >> password;
     enable_echo();
-    std::cout << "\n";
+    cout << "\n";
   } while (password.length() > 4);
 
   users.emplace_back(email, password);
   clear_screen();
-  std::cout << "[SUCCESS] User successfully registered!\n\n";
+  cout << "[SUCCESS] User successfully registered!\n\n";
   wait_for_enter();
 }
 
-bool login_user(const std::string& input_email, const std::string& input_password) {
+bool login_user(const string& input_email, const string& input_password) {
   for (const auto& user : users) {
     if (user.email == input_email && user.password == input_password) {
       return true;
@@ -75,33 +77,33 @@ bool login_user(const std::string& input_email, const std::string& input_passwor
   return false;
 }
 
-void session_loop(const std::string& email) {
+void session_loop(const string& email) {
   clear_screen();
   print_header("User Session");
-  std::cout << "[INFO] Logged in as: " << email << "\n\n";
+  cout << "[INFO] Logged in as: " << email << "\n\n";
   wait_for_enter();
 }
 
 void standard_login() {
   clear_screen();
-  std::string email, password;
+  string email, password;
 
   print_header("Login");
-  std::cout << "Enter your email: ";
-  std::cin >> email;
+  cout << "Enter your email: ";
+  cin >> email;
 
-  std::cout << "Enter your password: ";
+  cout << "Enter your password: ";
   disable_echo();
-  std::cin >> password;
+  cin >> password;
   enable_echo();
-  std::cout << "\n";
+  cout << "\n";
 
   clear_screen();
   if (login_user(email, password)) {
-    std::cout << "[SUCCESS] Login successful! Welcome!\n\n";
+    cout << "[SUCCESS] Login successful! Welcome!\n\n";
     session_loop(email);
   } else {
-    std::cout << "[ERROR] Incorrect credentials. Please try again.\n\n";
+    cout << "[ERROR] Incorrect credentials. Please try again.\n\n";
   }
 }
 
@@ -114,10 +116,10 @@ void login() {
   int option;
 
   print_header("Login Mode");
-  std::cout << "1 - Standard Login\n";
-  std::cout << "2 - Brute-force simulation\n\n";
-  std::cout << "Your choice: ";
-  std::cin >> option;
+  cout << "1 - Standard Login\n";
+  cout << "2 - Brute-force simulation\n\n";
+  cout << "Your choice: ";
+  cin >> option;
 
   switch (option) {
     case 1:
@@ -127,7 +129,7 @@ void login() {
       brute_force_login();
       break;
     default:
-      std::cout << "[ERROR] Invalid option! Please try again.\n";
+      cout << "[ERROR] Invalid option! Please try again.\n";
   }
 }
 
@@ -136,12 +138,12 @@ void view_users() {
   print_header("Registered Users");
 
   if (users.empty()) {
-    std::cout << "[INFO] No users registered.\n\n";
+    cout << "[INFO] No users registered.\n\n";
   } else {
     for (const auto& user : users) {
-      std::cout << "Email: " << user.email << "\n";
+      cout << "Email: " << user.email << "\n";
     }
-    std::cout << "\n";
+    cout << "\n";
   }
 
   wait_for_enter();
@@ -154,13 +156,13 @@ int main() {
     clear_screen();
     print_header("Welcome to the Registration/Login System");
 
-    std::cout << "Choose an option:\n";
-    std::cout << "  [1] Register\n";
-    std::cout << "  [2] Login\n";
-    std::cout << "  [3] View registered users\n";
-    std::cout << "  [4] Exit\n\n";
-    std::cout << "Your choice: ";
-    std::cin >> option;
+    cout << "Choose an option:\n";
+    cout << "  [1] Register\n";
+    cout << "  [2] Login\n";
+    cout << "  [3] View registered users\n";
+    cout << "  [4] Exit\n\n";
+    cout << "Your choice: ";
+    cin >> option;
 
     switch (option) {
       case 1:
@@ -173,10 +175,10 @@ int main() {
         view_users();
         break;
       case 4:
-        std::cout << "[INFO] Exiting...\n";
+        cout << "[INFO] Exiting...\n";
         return 0;
       default:
-        std::cout << "[ERROR] Invalid option! Please try again.\n";
+        cout << "[ERROR] Invalid option! Please try again.\n";
     }
   }
   return 0;
