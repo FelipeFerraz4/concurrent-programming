@@ -3,8 +3,11 @@
 #include <string>
 #include <termios.h>
 #include <unistd.h>
+#include <chrono>
 
 using namespace std;
+
+int size_password = 4;
 
 class User {
 public:
@@ -31,7 +34,7 @@ void enable_echo() {
 }
 
 void clear_screen() {
-  cout << "\033[2J\033[1;1H"; // ANSI escape code for clearing screen (Linux/macOS)
+  cout << "\033[2J\033[1;1H"; 
 }
 
 void print_header(const string& title) {
@@ -55,12 +58,12 @@ void register_user() {
   cin >> email;
 
   do {
-    cout << "Enter your password (max 3 characters): ";
+    cout << "Enter your password (max " << size_password << " characters): ";
     disable_echo();
     cin >> password;
     enable_echo();
     cout << "\n";
-  } while (password.length() > 4);
+  } while (password.length() > size_password);
 
   users.emplace_back(email, password);
   clear_screen();
@@ -108,7 +111,59 @@ void standard_login() {
 }
 
 void brute_force_login() {
-  // falta isso aqui
+  clear_screen();
+  print_header("Brute-force Attack Simulation");
+
+  if (users.empty()) {
+    cout << "[ERROR] No users registered!\n\n";
+    wait_for_enter();
+    return;
+  }
+
+  string target_email;
+  cout << "Enter the email to brute-force: ";
+  cin >> target_email;
+
+  string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+  auto start = chrono::steady_clock::now();
+  int attempts = 0;
+
+  for (int length = 1; length <= size_password; ++length) {
+    string attempt(length, charset[0]);
+
+    while (true) {  
+      attempts++;
+      if (login_user(target_email, attempt)) {
+        auto end = chrono::steady_clock::now();
+        auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+        cout << "\n[SUCCESS] Password found!\n";
+        cout << "Email: " << target_email << "\n";
+        cout << "Password: " << attempt << "\n";
+        cout << "Attempts: " << attempts << "\n";
+        cout << "Time taken: " << duration.count() << " ms\n\n";
+        wait_for_enter();
+        return;
+      }
+
+      
+      int i = length - 1;
+      while (i >= 0) {
+        if (attempt[i] != charset.back()) {
+          attempt[i] = charset[charset.find(attempt[i]) + 1];
+          break;
+        } else {
+          attempt[i] = charset[0];
+          i--;
+        }
+      }
+
+      if (i < 0) break; 
+    }
+  }
+
+  cout << "[FAILURE] Could not find password for " << target_email << "\n";
+  wait_for_enter();
 }
 
 void login() {
