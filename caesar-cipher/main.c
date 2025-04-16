@@ -2,9 +2,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
-#include <omp.h> // Biblioteca OpenMP
+#include <omp.h>
 
-// Função para medir o tempo com alta precisão
 double get_time() {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
