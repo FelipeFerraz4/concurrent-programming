@@ -1,0 +1,58 @@
+#include <iostream>
+#include <chrono>
+#include "linear.hpp"
+#include "parallel.hpp"
+#include <vector>
+#include <string>
+
+using namespace std;
+
+// Compilar com:
+// g++ -std=c++17 -fopenmp main.cpp linear.cpp parallel.cpp -o main.exe
+
+int main() {
+    vector<string> mensagens = {
+        "ATENCAO TODAS AS UNIDADES ESTE E UM CODIGO VERMELHO PROSEGUIR COM A OPERACAO IMEDIATAMENTE FALHA NAO E UMA OPCAO",
+        "OPERACAO OLHO DE AGUILA ESTA AUTORIZADA REPORTE PARA SEUS POSTOS DESIGNADOS MANTENHA-SE ALERTA E MANTENHA SILENCIO ESTRICTO DE COMUNICACAO",
+        "COMANDANTE EM CHEFE EMITIU UMA ORDEM DE EXECUCAO GARANTA QUE TODOS OS OBJETIVOS SEJAM SECURADOS SEM ATRASO",
+        "SECURE A AREA A TODO CUSTO ESPERAMOS QUE FORCAS INIMIGAS HOSTIS ESTEJAM PRESENTES FIQUE ATENTO E MANTENHA OS OLHOS ABERTOS O TEMPO TODO",
+        "O INIMIGO ESTA MOVIMENTANDO-SE PARA A POSICAO NAO TEMOS TEMPO A PERDER TODAS AS TROOPAS DEVEM SE MOVER AGORA NAO ENGATEM ATÉ RECEBER A ORDEM",
+        "ESTA E UMA MENSAGEM DE ALTA PRIORIDADE A SITUACAO E CRITICA NAO ATRASE SUA RESPOSTA ATUE IMEDIATAMENTE AO RECEBER A ORDEM",
+        "FORCAS ALIADAS FORAM DESLOCADAS AS PREPARACOES FINAIS ESTAO EM ANDAMENTO MANTENHA-SE EM FORMACAO E ESTEJA PRONTO PARA MOBILIZAR A QUALQUER MOMENTO",
+        "O INIMIGO LANCOU UM ATAQUE SURPRESA A RETALIACAO E IMINENTE REPORTE SEU STATUS PARA O COMANDO O MAIS RAPIDO POSSIVEL",
+        "TOP SECRET: INTELIGENCIA OPERACIONAL INDICA O PROXIMO MOVIMENTO DO INIMIGO TODAS AS UNIDADES DEVEM PROSSEGUIR COM EXTREMA CAUTELA ENGATEM SOMENTE SE NECESSARIO",
+        "TODAS AS UNIDADES EXECUTEM O PLANO ALPHA ATENCAO AS CONDICOES CLIMATICAS ESTAO EXTREMAMENTE ADVERSAS PROSEGUIR COM CAUTELA E ESPERAR RESISTENCIA TOTAL DO INIMIGO"
+    };
+
+    string operacao_linha_frente_1 = "a operacao na linha de frente exige uma coordenacao precisa entre as unidades de combate e os suportes logisticos o avanco das forcas terrestres deve ser acompanhado de perto pelas unidades areas garantindo a supremacia no espaco aereo e a protecao contra ataques inimigos as forcas devem estar preparadas para enfrentar resistencia em areas urbanas onde as taticas de guerrilha e emboscadas sao comuns o uso de veiculos blindados e unidades de infantaria leve e fundamental para garantir a mobilidade e a resposta rapida a qualquer ameaca inesperada a comunicacao continua entre os comandantes no campo e o centro de comando e essencial para a adaptacao das estrategias em tempo real alem disso a coordenacao entre as diferentes forcas de apoio e crucial as equipes de engenharia devem estar prontas para estabelecer pontos de defesa e fortificacao enquanto os medicos de combate devem fornecer suporte medico imediato as tropas feridas a presenca de artilharia e unidades de apoio de fogo tambem e necessaria para neutralizar alvos estrategicos e garantir uma cobertura eficaz para o avancao das tropas a operacao requer uma vigilancia constante e o uso de drones para monitorar os movimentos inimigos e antecipar suas acoes o sucesso depende nao apenas da forca bruta mas tambem da capacidade de adaptacao as condicoes dinamicas do campo de batalha";
+
+    string operacao_linha_frente_2 = "A operacao na linha de frente exige uma coordenacao precisa entre as unidades de combate e os suportes logisticos, sendo crucial a integracao de todas as partes envolvidas para garantir um desempenho eficaz em todas as fases do conflito. O avanco das forcas terrestres deve ser acompanhado de perto pelas unidades areas, garantindo a supremacia no espaco aereo e a protecao contra ataques inimigos que possam surgir a qualquer momento, de forma a assegurar o sucesso da missao. As forcas devem estar preparadas para enfrentar resistencia em areas urbanas, onde as taticas de guerrilha e emboscadas sao comuns e altamente eficazes, tornando a operacao ainda mais desafiadora. O uso de veiculos blindados e unidades de infantaria leve e fundamental para garantir a mobilidade e a resposta rapida a qualquer ameaca inesperada, possibilitando uma cobertura eficiente em diferentes cenarios. A comunicacao continua entre os comandantes no campo e o centro de comando e essencial para a adaptacao das estrategias em tempo real, considerando as constantes mudancas no terreno e as variacoes nas condicoes de combate. Alem disso, a coordenacao entre as diferentes forcas de apoio e crucial para garantir que todas as equipes estejam alinhadas e preparadas para executar suas tarefas de forma sincronizada. As equipes de engenharia devem estar prontas para estabelecer pontos de defesa e fortificacao em tempo recorde, protegendo as unidades de combate contra ataques inimigos, enquanto os medicos de combate devem fornecer suporte medico imediato as tropas feridas, garantindo a continuidade das operacoes mesmo em face de perdas. A presenca de artilharia e unidades de apoio de fogo tambem e necessaria para neutralizar alvos estrategicos, impedindo o avanço do inimigo e garantindo uma cobertura eficaz para o avancao das tropas. A operacao requer uma vigilancia constante e o uso de drones para monitorar os movimentos inimigos e antecipar suas acoes, possibilitando uma resposta antecipada a qualquer tentativa de sabotagem ou contra-ataque. O sucesso da operacao depende nao apenas da forca bruta, mas tambem da capacidade de adaptacao as condicoes dinamicas do campo de batalha, com uma abordagem flexivel e estrategica que permita reagir rapidamente a novas ameaças e desafios. A habilidade de reagir de forma coordenada e eficiente em qualquer situacao e um dos maiores diferenciais para garantir que a missão seja cumprida com sucesso.";
+
+
+    // melhor 6, text, 9
+    string original = operacao_linha_frente_2;
+    int shift = 5;
+    string encrypted = caesar_encrypt(original, shift);
+
+    cout << "Texto criptografado: " << encrypted << endl;
+
+    // Modo Linear
+    auto start1 = chrono::high_resolution_clock::now();
+    int key_linear = brute_force_caesar_linear_freq(encrypted);
+    auto end1 = chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsed1 = end1 - start1;
+
+    cout << "Chave encontrada (Linear): " << key_linear << " | Tempo: " << elapsed1.count() << "s\n";
+    cout << "Texto descriptografado (Linear): " << caesar_encrypt(encrypted, 26 - key_linear) << endl;
+
+    // Modo Paralelo
+    auto start2 = chrono::high_resolution_clock::now();
+    int key_parallel = brute_force_caesar_parallel_freq(encrypted);
+    auto end2 = chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsed2 = end2 - start2;
+
+    cout << "Chave encontrada (Paralelo): " << key_parallel << " | Tempo: " << elapsed2.count() << "s\n";
+    cout << "Texto descriptografado (Paralelo): " << caesar_encrypt(encrypted, 26 - key_parallel) << endl;
+
+    return 0;
+}
