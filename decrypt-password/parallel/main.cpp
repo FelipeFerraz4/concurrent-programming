@@ -44,9 +44,9 @@ void clear_screen() {
 }
 
 void print_header(const string& title) {
-  cout << "==============================================\n";
-  cout << "   " << title << "\n";
-  cout << "==============================================\n";
+  cout << "==============================================" << endl;
+  cout << "   " << title << endl;
+  cout << "==============================================\n" << endl;
 }
 
 void wait_for_enter() {
@@ -113,9 +113,9 @@ void brute_force_login() {
 
   #pragma omp parallel
   {
-    int thread_id = omp_get_thread_num();  // Obtém o ID da thread atual
+    int thread_id = omp_get_thread_num();
     string attempt(size_password, charset[0]);
-    int local_thread_attempts = 0;  // Contador local de tentativas para a thread
+    int local_thread_attempts = 0;
 
     for (int length = 1; length <= size_password; ++length) {
       if (local_password_found) continue;
@@ -129,8 +129,8 @@ void brute_force_login() {
           local_thread_attempts++;
 
           if (login_user(target_email, attempt)) {
-              local_password_found = true;
-              break;
+            local_password_found = true;
+            break;
           }
 
           int k = length - 1;
