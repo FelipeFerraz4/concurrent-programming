@@ -28,6 +28,7 @@ g++ -o decryptor main.cpp
 ./decryptor
 ```
 
+### 🔸 Parallel Version
 ```bash
 cd decrypt-password/parallel
 g++ -fopenmp -o decryptor main.cpp
