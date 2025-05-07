@@ -79,17 +79,17 @@ int score_text_parallel(const string& text) {
         }
     }
 
-    // Encontra a letra mais frequente
-    char most_frequent = find_most_frequent_letter(text);
+    // // Encontra a letra mais frequente
+    // char most_frequent = find_most_frequent_letter(text);
 
-    // Atribui pontos com base na letra mais frequente
-    if (most_frequent == 'A') {
-        score += 4;
-    } else if (most_frequent == 'E') {
-        score += 2;
-    } else if (most_frequent == 'O') {
-        score += 1;
-    }
+    // // Atribui pontos com base na letra mais frequente
+    // if (most_frequent == 'A') {
+    //     score += 4;
+    // } else if (most_frequent == 'E') {
+    //     score += 2;
+    // } else if (most_frequent == 'O') {
+    //     score += 1;
+    // }
 
     return score;
 }
